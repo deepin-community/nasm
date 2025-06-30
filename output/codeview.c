@@ -64,6 +64,9 @@ const struct dfmt df_cv8 = {
     cv8_init,                   /* .init */
     cv8_linenum,                /* .linenum */
     cv8_deflabel,               /* .debug_deflabel */
+    NULL,                       /* .debug_smacros */
+    NULL,                       /* .debug_include */
+    NULL,                       /* .debug_mmacros */
     null_debug_directive,       /* .debug_directive */
     cv8_typevalue,              /* .debug_typevalue */
     cv8_output,                 /* .debug_output */
@@ -748,7 +751,7 @@ static void write_symbolinfo_table(struct coff_Section *const sect)
     section_write32(sect, 0x000000F1);
     section_write32(sect, field_length);
 
-    /* for sub fields, length preceeds type */
+    /* for sub fields, length proceeds type */
 
     out_len = write_symbolinfo_obj(sect);
     nasm_assert(out_len == obj_length);

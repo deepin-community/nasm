@@ -11,10 +11,19 @@ my %prefixes = ();
 my $err = 0;
 my $nwarn = 0;
 
-sub quote_for_c($) {
+sub quote_for_c(@) {
     my $s = join('', @_);
 
     $s =~ s/([\"\'\\])/\\$1/g;
+    return $s;
+}
+
+# Remove a subset of nasmdoc markup
+sub remove_markup(@) {
+    my $s = join('', @_);
+
+    $s =~ s/\\[\w+](?:\{((?:[^\}]|\\\})*)\})/$1/g;
+    $s =~ s/\\(\W)/$1/g;
     return $s;
 }
 
@@ -85,7 +94,7 @@ sub find_warnings {
 			     doc => [], file => $infile, line => $nline};
 
 		    if (defined(my $that = $aliases{$name})) {
-			# Duplicate defintion?!
+			# Duplicate definition?!
 			printf STDERR "%s:%s: warning %s previously defined at %s:%s\n",
 			    $infile, $nline, $name, $that->{file}, $that->{line};
 		    } else {
@@ -162,7 +171,7 @@ if ($what eq 'c') {
 	$#warnings + 2;
     print $out "\tNULL";
     foreach my $warn (@warnings) {
-	my $help = quote_for_c($warn->{help});
+	my $help = quote_for_c(remove_markup($warn->{help}));
 	print $out ",\n\t\"", $help, "\"";
     }
     print $out "\n};\n\n";
@@ -228,6 +237,9 @@ if ($what eq 'c') {
 		    'off' => 'Disabled',
 		    'err' => 'Enabled and promoted to error' );
 
+    my @indexinfo = ();
+    my @outtxt    = ();
+
     foreach my $pfx (sort { $a cmp $b } keys(%prefixes)) {
 	my $warn = $aliases{$pfx};
 	my @doc;
@@ -236,24 +248,23 @@ if ($what eq 'c') {
 	    my @plist = sort { $a cmp $b } @{$prefixes{$pfx}};
 	    next if ( $#plist < 1 );
 
-	    @doc = ("is a group alias for all warning classes prefixed by ".
-		    "\\c{".$pfx."-}; currently\n");
-	    for (my $i = 0; $i <= $#plist; $i++) {
-		if ($i > 0) {
-		    if ($i < $#plist) {
-			push(@doc, ", ");
-		    } else {
-			push(@doc, ($i == 1) ? " and " : ", and ");
-		    }
-		}
-		push(@doc, '\c{'.$plist[$i].'}');
-	    }
-	    push(@doc, ".\n");
+	    @doc = ("all \\c{$pfx-} warnings\n\n",
+		    "\\> \\c{$pfx} is a group alias for all warning classes\n",
+		    "prefixed by \\c{$pfx-}; currently\n");
+	    # Just commas is bad grammar to be sure, but it is more
+	    # legible than the alternative.
+	    push(@doc, join(scalar(@plist) < 3 ? ' and ' : ', ',
+			    map { "\\c{$_}" } @plist).".\n");
 	} elsif ($pfx ne $warn->{name}) {
-	    @doc = ("is a backwards compatibility alias for \\c{",
-		    $warn->{name}, "}.\n");
+	    my $awarn = $aliases{$warn->{name}};
+	    @doc = ($awarn->{help}."\n\n",
+		    "\\> \\c{$pfx} is a backwards compatibility alias for \\c{".
+		    $warn->{name}."}.\n");
 	} else {
 	    my $docdef = $whatdef{$warn->{def}};
+
+	    @doc = ($warn->{help}."\n\n",
+		    "\\> \\c{".$warn->{name}."} ");
 
 	    my $newpara = 0;
 	    foreach my $l (@{$warn->{doc}}) {
@@ -272,24 +283,30 @@ if ($what eq 'c') {
 	    }
 	}
 
-	print $out "\\b \\i\\c{", $pfx, "} ", @doc, "\n";
+	push(@indexinfo, "\\IR{w-$pfx} warning class, \\c{$pfx}\n");
+	push(@outtxt, "\\b \\I{w-$pfx} \\c{$pfx}: ", @doc, "\n");
     }
+
+    print $out "\n", @indexinfo, "\n", @outtxt;
 }
 
 close($out);
 
 # Write data to file if and only if it has changed
-# Windows requires append mode here
-open($out, '+>>', $outfile)
-    or die "$0: cannot open output file $outfile: $!\n";
-my $datalen = length($outdata);
-my $oldlen = read($out, my $oldoutdata, $datalen+1);
-if (!defined($oldlen) || $oldlen != $datalen ||
-    !($oldoutdata eq $outdata)) {
-    # Data changed, must rewrite
-    truncate($out, 0);
-    seek($out, 0, SEEK_SET)
-	or die "$0: cannot rewind output file $outfile: $!\n";
-    print $out $outdata;
+# For some systems, even if we don't write, opening for append
+# apparently touches the timestamp, so we need to read and write
+# as separate operations.
+if (open(my $out, '<', $outfile)) {
+    my $datalen = length($outdata);
+    my $oldlen = read($out, my $oldoutdata, $datalen+1);
+    close($out);
+    exit 0 if (defined($oldlen) && $oldlen == $datalen &&
+	       ($oldoutdata eq $outdata));
 }
+
+# Data changed, must rewrite
+open(my $out, '>', $outfile)
+    or die "$0: cannot open output file $outfile: $!\n";
+
+print $out $outdata;
 close($out);

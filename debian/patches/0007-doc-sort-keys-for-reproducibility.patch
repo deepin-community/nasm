@@ -13,10 +13,10 @@ Signed-off-by: Jordan Justen <jordan.l.justen@intel.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/doc/genps.pl b/doc/genps.pl
-index 72985cc..86a08b2 100755
+index cce27d7..6577814 100755
 --- a/doc/genps.pl
 +++ b/doc/genps.pl
-@@ -1076,10 +1076,10 @@ print "%%EndComments\n";
+@@ -1085,10 +1085,10 @@ print "%%EndComments\n";
  print "%%BeginProlog\n";
  
  # Emit the configurables as PostScript tokens
