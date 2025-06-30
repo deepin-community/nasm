@@ -1,29 +1,23 @@
 Source: nasm
 Section: devel
 Priority: optional
-Maintainer: Anibal Monsalve Salazar <anibal@debian.org>
-Uploaders:
- Jordan Justen <jljusten@debian.org>,
-Standards-Version: 4.5.0.2
-Build-Depends:
- debhelper-compat (= 13),
- dpkg-dev (>= 1.16.1~),
- fonts-liberation2,
- fontconfig,
- ghostscript,
- libfont-ttf-perl,
- libsort-versions-perl,
- texinfo,
+Maintainer: Jordan Justen <jljusten@debian.org>
+Uploaders: Aníbal Monsalve Salazar <anibal@debian.org>
+Standards-Version: 4.7.0
+Build-Depends: debhelper-compat (= 13),
+               fontconfig,
+               fonts-liberation2,
+               ghostscript,
+               libfont-ttf-perl,
+               libsort-versions-perl,
+               texinfo
 Homepage: http://www.nasm.us/
 Vcs-Git: https://salsa.debian.org/debian/nasm.git
 Vcs-Browser: https://salsa.debian.org/debian/nasm
 
 Package: nasm
 Architecture: any
-Depends:
- dpkg (>= 1.15.4) | install-info,
- ${misc:Depends},
- ${shlibs:Depends},
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: General-purpose x86 assembler
  Netwide Assembler.  NASM will currently output flat-form binary files,
  a.out, COFF and ELF Unix object files, and Microsoft 16-bit DOS and
@@ -32,4 +26,4 @@ Description: General-purpose x86 assembler
  Also included is NDISASM, a prototype x86 binary-file disassembler
  which uses the same instruction table as NASM.
  .
- NASM is released under the GNU Lesser General Public License (LGPL).
+ NASM is released under the 2-clause BSD license.

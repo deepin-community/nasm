@@ -20,7 +20,7 @@ INSTALL		= @INSTALL@
 INSTALL_PROGRAM	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
 
-PERL		= perl -I$(srcdir)
+PERL		= perl -I$(top_srcdir)/perllib -I$(srcdir)
 
 PDFOPT		= @PDFOPT@
 
@@ -42,6 +42,12 @@ HTMLAUX		= nasmdoc.css local.css nasmlogw.png
 SRCS		= nasmdoc.src inslist.src changes.src warnings.src version.src
 OUT		= html nasmdoc.txt nasmdoc.pdf $(XZFILES)
 XZOUT           = nasmdoc.pdf.xz
+
+# Don't delete intermediate files
+.SECONDARY:
+
+# Delete files on error
+.DELETE_ON_ERROR:
 
 .SUFFIXES:
 .SUFFIXES: .pfa .ph

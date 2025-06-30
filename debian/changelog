@@ -1,3 +1,26 @@
+nasm (2.16.03-1) unstable; urgency=medium
+
+  * New upstream release
+  * d/control: Update Standards-Version to 4.7.0
+  * debian/*: Run wrap-and-sort
+  * d/control: Set Jordan as Maintainer, Aníbal as Uploader
+  * d/control: Update license in package description. (Closes: #942616)
+  * d/control: Drop dpkg, install-info dependencies. (Closes: #1013828)
+  * d/source/lintian-overrides: Drop lintian override no longer being flagged
+
+ -- Jordan Justen <jljusten@debian.org>  Fri, 09 Aug 2024 02:03:16 -0700
+
+nasm (2.16.01-1) unstable; urgency=medium
+
+  * New upstream release
+  * d/patches: Rebase patches for 2.16.01
+  * d/rules: No longer use install_rdf
+  * d/control: Update Standards-Version to 4.6.1.0
+  * d/source/lintian-overrides: Update override format for current lintian
+  * d/watch: Set version to 4
+
+ -- Jordan Justen <jljusten@debian.org>  Fri, 30 Dec 2022 13:55:58 -0800
+
 nasm (2.15.05-1) unstable; urgency=medium
 
   * New upstream release (Closes: #969011)

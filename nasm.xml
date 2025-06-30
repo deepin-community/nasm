@@ -179,7 +179,7 @@ output file name will be &#8216;nasm.out&#8217;.</simpara>
 </term>
 <listitem>
 <simpara>
-        Same as <emphasis role="strong">-M</emphasis> but assumes that missing Makefile dependecies are generated
+        Same as <emphasis role="strong">-M</emphasis> but assumes that missing Makefile dependencies are generated
         and added to dependency list without a prefix.
 </simpara>
 </listitem>

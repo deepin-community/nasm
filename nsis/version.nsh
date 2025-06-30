@@ -1,5 +1,5 @@
-!define VERSION "2.15.05"
-!define MAJOR_VER 15
-!define MINOR_VER 15
-!define SUBMINOR_VER 5
+!define VERSION "2.16.03"
+!define MAJOR_VER 16
+!define MINOR_VER 16
+!define SUBMINOR_VER 3
 !define PATCHLEVEL_VER 0

@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------- *
  *
- *   Copyright 1996-2020 The NASM Authors - All Rights Reserved
+ *   Copyright 1996-2023 The NASM Authors - All Rights Reserved
  *   See the file AUTHORS included with the NASM distribution for
  *   the specific copyright holders.
  *
@@ -60,7 +60,7 @@ void printf_func(1, 2) nasm_debug(const char *fmt, ...);
 void printf_func(2, 3) nasm_debugf(errflags flags, const char *fmt, ...);
 void printf_func(1, 2) nasm_info(const char *fmt, ...);
 void printf_func(2, 3) nasm_infof(errflags flags, const char *fmt, ...);
-void printf_func(2, 3) nasm_warn(errflags flags, const char *fmt, ...);
+void printf_func(2, 3) nasm_warn_(errflags flags, const char *fmt, ...);
 void printf_func(1, 2) nasm_nonfatal(const char *fmt, ...);
 void printf_func(2, 3) nasm_nonfatalf(errflags flags, const char *fmt, ...);
 fatal_func printf_func(1, 2) nasm_fatal(const char *fmt, ...);
@@ -93,12 +93,11 @@ fatal_func vprintf_func(2) nasm_verror_critical(errflags severity, const char *f
 #define ERR_NOFILE		0x00000010	/* don't give source file name/line */
 #define ERR_HERE		0x00000020      /* point to a specific source location */
 #define ERR_USAGE		0x00000040	/* print a usage message */
-#define ERR_PASS1		0x00000080	/* message on pass_first */
 #define ERR_PASS2		0x00000100	/* ignore unless on pass_final */
 
 #define ERR_NO_SEVERITY		0x00000200	/* suppress printing severity */
 #define ERR_PP_PRECOND		0x00000400	/* for preprocessor use */
-#define ERR_PP_LISTMACRO	0x00000800	/* from preproc->error_list_macros() */
+#define ERR_PP_LISTMACRO	0x00000800	/* from pp_error_list_macros() */
 #define ERR_HOLD		0x00001000      /* this error/warning can be held */
 
 /*
@@ -145,6 +144,27 @@ void nasm_error_hold_pop(errhold hold, bool issue);
 
 /* Should be included from within error.h only */
 #include "warnings.h"
+
+/* True if a warning is enabled, either as a warning or an error */
+static inline bool warn_active(errflags warn)
+{
+    enum warn_index wa = WARN_IDX(warn);
+    return unlikely(warning_state[wa] & WARN_ST_ENABLED);
+}
+
+#ifdef HAVE_VARIADIC_MACROS
+
+#define nasm_warn(w, ...) \
+    do { \
+        if (unlikely(warn_active(w))) \
+            nasm_warn_(w, __VA_ARGS__); \
+    } while (0)
+
+#else
+
+#define nasm_warn nasm_warn_
+
+#endif
 
 /* By defining MAX_DEBUG, we can compile out messages entirely */
 #ifndef MAX_DEBUG

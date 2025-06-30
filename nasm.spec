@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
-%define nasm_version 2.15.05
+%define nasm_version 2.16.03
 Summary: The Netwide Assembler, a portable x86 assembler with Intel-like syntax
 Name: nasm
-Version: 2.15.05
+Version: 2.16.03
 Release: 0%{?dist}
 License: BSD
 Source: http://www.nasm.us/pub/nasm/releasebuilds/%{nasm_version}/nasm-%{nasm_version}.tar.xz
 URL: http://www.nasm.us/
 BuildRoot: /tmp/rpm-build-nasm
 Prefix: %{_prefix}
-BuildRequires: perl(bytes)
 BuildRequires: perl(Fcntl)
 BuildRequires: perl(File::Basename)
 BuildRequires: perl(File::Compare)
@@ -27,7 +26,6 @@ BuildRequires: perl(Font::TTF::Post)
 BuildRequires: perl(Font::TTF::PSNames)
 BuildRequires: perl(Getopt::Long)
 BuildRequires: perl(Pod::Usage)
-BuildRequires: perl(sort)
 BuildRequires: perl(Sort::Versions)
 BuildRequires: autoconf
 BuildRequires: automake
@@ -45,9 +43,6 @@ BuildRequires: fontconfig
 BuildRequires: adobe-source-sans-pro-fonts
 BuildRequires: adobe-source-code-pro-fonts
 
-%package rdoff
-Summary: Tools for the RDOFF binary format, sometimes used with NASM.
-
 %description
 NASM is the Netwide Assembler, a free portable assembler for the Intel
 80x86 microprocessor series, using primarily the traditional Intel
@@ -57,24 +52,19 @@ instruction mnemonics and syntax.
 Extensive documentation for the Netwide Assembler (NASM) in HTML and
 PDF formats.
 
-%description rdoff
-Tools for the operating-system independent RDOFF binary format, which
-is sometimes used with the Netwide Assembler (NASM).  These tools
-include linker, library manager, loader, and information dump.
-
 %prep
 %setup -q -n nasm-%{nasm_version}
 
 %build
 sh autogen.sh
-%configure --enable-sections
+%configure --enable-gc $([ -z "%{_lto_cflags}" ] || echo --enable-lto)
 make %{?_smp_mflags} everything
 
 %install
 rm -rf "%{buildroot}"
 mkdir -p "%{buildroot}"/%{_bindir}
 mkdir -p "%{buildroot}"/%{_mandir}/man1
-make DESTDIR="%{buildroot}" install install_rdf
+make DESTDIR="%{buildroot}" install
 
 %files
 %doc AUTHORS
@@ -85,19 +75,6 @@ make DESTDIR="%{buildroot}" install install_rdf
 
 %files doc
 %doc doc/html doc/nasmdoc.pdf.xz
-
-%files rdoff
-%{_bindir}/ldrdf
-%{_bindir}/rdf2bin
-%{_bindir}/rdf2com
-%{_bindir}/rdf2ihx
-%{_bindir}/rdf2ith
-%{_bindir}/rdf2srec
-%{_bindir}/rdfdump
-%{_bindir}/rdflib
-%{_bindir}/rdx
-%{_mandir}/man1/ldrdf.1*
-%{_mandir}/man1/rd*.1*
 
 # This is the upstream spec file; the change log is in git
 %changelog

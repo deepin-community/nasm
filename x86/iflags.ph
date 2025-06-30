@@ -23,6 +23,7 @@ if_("AR2",               "SB, SW, SD applies to argument 2");
 if_("AR3",               "SB, SW, SD applies to argument 3");
 if_("AR4",               "SB, SW, SD applies to argument 4");
 if_("OPT",               "Optimizing assembly only");
+if_("LATEVEX",            "Only if EVEX instructions are disabled");
 
 #
 # dword bound - instruction feature filtering flags
@@ -33,6 +34,7 @@ if_("PRIV",              "Privileged instruction");
 if_("SMM",               "Only valid in SMM");
 if_("PROT",              "Protected mode only");
 if_("LOCK",              "Lockable if operand 0 is memory");
+if_("LOCK1",             "Lockable if operand 1 is memory");
 if_("NOLONG",            "Not available in long mode");
 if_("LONG",              "Long mode");
 if_("NOHLE",             "HLE prefixes forbidden");
@@ -83,6 +85,8 @@ if_("AVX512BITALG",      "AVX-512 Bit Algorithm instructions");
 if_("AVX512VPOPCNTDQ",   "AVX-512 VPOPCNTD/VPOPCNTQ");
 if_("AVX5124FMAPS",      "AVX-512 4-iteration multiply-add");
 if_("AVX5124VNNIW",      "AVX-512 4-iteration dot product");
+if_("AVX512FP16",        "AVX-512 FP16 instructions");
+if_("AVX512FC16",        "AVX-512 FC16 instructions");
 if_("SGX",               "Intel Software Guard Extensions (SGX)");
 if_("CET",               "Intel Control-Flow Enforcement Technology (CET)");
 if_("ENQCMD",            "Enqueue command instructions");
@@ -95,8 +99,24 @@ if_("AVX512VP2INTERSECT", "AVX-512 VP2INTERSECT instructions");
 if_("AMXTILE",           "AMX tile configuration instructions");
 if_("AMXBF16",           "AMX bfloat16 multiplication");
 if_("AMXINT8",           "AMX 8-bit integer multiplication");
+if_("FRED",              "Flexible Return and Exception Delivery (FRED)");
+if_("LKGS",              "Load User GS from Kernel (LKGS)");
+if_("RAOINT",		 "Remote atomic operations (RAO-INT)");
+if_("UINTR",		 "User interrupts");
+if_("CMPCCXADD",         "CMPccXADD instructions");
+if_("PREFETCHI",         "PREFETCHI0 and PREFETCHI1");
+if_("WRMSRNS",		 "WRMSRNS");
+if_("MSRLIST",           "RDMSRLIST and WRMSRLIST");
+if_("AVXNECONVERT",	 "AVX exceptionless floating-point conversions");
+if_("AVXVNNIINT8",       "AVX Vector Neural Network 8-bit integer instructions");
+if_("AVXIFMA",           "AVX integer multiply and add");
+if_("HRESET",            "History reset");
+if_("SMAP",		 "Supervisor Mode Access Prevention (SMAP)");
+if_("SHA512",            "SHA512 instructions");
+if_("SM3",               "SM3 instructions");
+if_("SM4",               "SM4 instructions");
 
-# Put these last [hpa: why?]
+# Put these last to minimize their relevance
 if_("OBSOLETE",          "Instruction removed from architecture");
 if_("NEVER",             "Instruction never implemented");
 if_("NOP",               "Instruction is always a (nonintentional) NOP");
@@ -128,9 +148,12 @@ if_("SANDYBRIDGE",       "Sandy Bridge");
 if_("FUTURE",            "Ivy Bridge or newer");
 if_("IA64",              "IA64 (in x86 mode)");
 
-# Must be the last CPU definition
-if_("ANY",               "Any x86 CPU");
+# Default CPU level
+if_("DEFAULT",           "Default CPU level");
 
-# These must come after the CPU defitions proper
+# Must be the last CPU definition
+if_("ANY",               "Allow any known instruction");
+
+# These must come after the CPU definitions proper
 if_("CYRIX",             "Cyrix-specific");
 if_("AMD",               "AMD-specific");
