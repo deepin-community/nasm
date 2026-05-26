@@ -1,6 +1,7 @@
 nasm (2.16.03-1deepin1) unstable; urgency=medium
 
   * Fix CVE-2025-8842: use-after-free in pp_cleanup_pass
+  * Fix CVE-2025-8844: NULL pointer dereference in parse_smacro_template
 
  -- deepin-ci-robot <packages@deepin.org>  Wed, 27 May 2026 03:23:58 +0800
 
