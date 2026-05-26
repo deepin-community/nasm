@@ -3,3 +3,5 @@
 0003-debian-debian-patches-04-reproducible-build.patch.patch
 0006-debian-Set-INSTALLROOT-to-DESTDIR-in-Makefile.in.patch
 0007-doc-sort-keys-for-reproducibility.patch
+CVE-2025-8842.patch
+CVE-2025-8844.patch
